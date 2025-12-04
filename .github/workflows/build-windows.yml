@@ -42,12 +42,12 @@ jobs:
         mkdir package
         copy dist\EmailToWhatsApp.exe package\
         copy dist\chromedriver.exe package\
-        echo # Email to WhatsApp Monitor > package\README.txt
-        echo. >> package\README.txt
-        echo 1. Make sure Google Chrome is installed >> package\README.txt
-        echo 2. Double-click EmailToWhatsApp.exe to run >> package\README.txt
-        echo 3. Scan QR code with WhatsApp on first run >> package\README.txt
-        echo 4. Edit the .exe with notepad to change email/group settings >> package\README.txt
+        echo "Email to WhatsApp Monitor" > package\README.txt
+        echo "" >> package\README.txt
+        echo "1. Make sure Google Chrome is installed" >> package\README.txt
+        echo "2. Double-click EmailToWhatsApp.exe to run" >> package\README.txt
+        echo "3. Scan QR code with WhatsApp on first run" >> package\README.txt
+        echo "4. Edit email/group settings in the .py file before building" >> package\README.txt
 
     - name: Upload executable
       uses: actions/upload-artifact@v4
