@@ -10,10 +10,10 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
 
@@ -21,25 +21,63 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pyinstaller
+        pip install pyinstaller webdriver-manager
+
+    - name: Download ChromeDriver
+      run: |
+        python -c "from webdriver_manager.chrome import ChromeDriverManager; ChromeDriverManager().install()"
+        mkdir -p dist
+        python -c "from webdriver_manager.chrome import ChromeDriverManager; import shutil; shutil.copy(ChromeDriverManager().install(), 'chromedriver.exe')"
 
     - name: Build executable
       run: |
         pyinstaller build.spec
 
+    - name: Copy ChromeDriver to dist
+      run: |
+        copy chromedriver.exe dist\
+
+    - name: Create package
+      run: |
+        mkdir package
+        copy dist\EmailToWhatsApp.exe package\
+        copy dist\chromedriver.exe package\
+        echo # Email to WhatsApp Monitor > package\README.txt
+        echo. >> package\README.txt
+        echo 1. Make sure Google Chrome is installed >> package\README.txt
+        echo 2. Double-click EmailToWhatsApp.exe to run >> package\README.txt
+        echo 3. Scan QR code with WhatsApp on first run >> package\README.txt
+        echo 4. Edit the .exe with notepad to change email/group settings >> package\README.txt
+
     - name: Upload executable
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: EmailToWhatsApp-Windows
-        path: dist/EmailToWhatsApp.exe
+        path: package/
 
     - name: Create Release
       if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
-        files: dist/EmailToWhatsApp.exe
+        files: |
+          package/EmailToWhatsApp.exe
+          package/chromedriver.exe
+          package/README.txt
         tag_name: v1.0-${{ github.run_number }}
         name: Release v1.0-${{ github.run_number }}
+        body: |
+          ## Email to WhatsApp Monitor v1.0
+
+          ### Installation:
+          1. Download all files from this release
+          2. Place them in the same folder
+          3. Make sure Google Chrome is installed
+          4. Double-click `EmailToWhatsApp.exe`
+
+          ### Files included:
+          - `EmailToWhatsApp.exe` - Main program
+          - `chromedriver.exe` - Chrome automation driver
+          - `README.txt` - Instructions
         draft: false
         prerelease: false
       env:

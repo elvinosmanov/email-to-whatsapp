@@ -20,15 +20,15 @@ wheels/
 .installed.cfg
 *.egg
 
-# WhatsApp session
+# WhatsApp session (DO NOT UPLOAD - contains your login)
 whatsapp_session/
 
-# Downloaded files
+# Downloaded email attachments
 *.jpg
 *.png
 *.jpeg
 
-# OS
+# OS files
 .DS_Store
 Thumbs.db
 
@@ -37,3 +37,11 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Backup and old files
+*.backup
+*_broken.py
+*copy.py
+
+# Claude Code
+.claude/
